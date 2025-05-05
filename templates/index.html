@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokémon List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f4f8;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            padding: 10px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .card h3 {
+            margin: 10px 0 0;
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pokémon List</h1>
+    <div class="grid">
+        {% for pokemon in pokemon_list %}
+        <div class="card">
+            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
+            <h3>{{ pokemon.name }}</h3>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
