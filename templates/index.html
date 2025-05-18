@@ -1,58 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pokémon List</title>
+    <title>Pokémon Squad Builder</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f0f4f8;
-        }
-
-        h1 {
+        /* Basic styling for layout */
+        .pokemon-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
             text-align: center;
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
+        .squad {
             margin-top: 20px;
         }
-
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: center;
-            padding: 10px;
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-        }
-
-        .card img {
-            width: 100px;
-            height: 100px;
-        }
-
-        .card h3 {
-            margin: 10px 0 0;
-            text-transform: capitalize;
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <h1>Pokémon List</h1>
-    <div class="grid">
+    <h1>Build Your Pokémon Squad</h1>
+    <div id="pokemon-list">
         {% for pokemon in pokemon_list %}
-        <div class="card">
+        <div class="pokemon-card" data-name="{{ pokemon.name }}">
+            <h3>{{ pokemon.name | capitalize }}</h3>
             <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
-            <h3>{{ pokemon.name }}</h3>
+            <button onclick="toggleSquad('{{ pokemon.name }}')">Add to Squad</button>
         </div>
         {% endfor %}
     </div>
+
+    <div class="squad">
+        <h2>Your Squad (0/6)</h2>
+        <ul id="squad-list"></ul>
+        <button id="battle-button" disabled>Battle</button>
+    </div>
+
+    <script>
+        const squad = [];
+
+        function toggleSquad(name) {
+            const index = squad.indexOf(name);
+            if (index === -1) {
+                if (squad.length >= 6) {
+                    alert("You can only have up to 6 Pokémon in your squad.");
+                    return;
+                }
+                squad.push(name);
+            } else {
+                squad.splice(index, 1);
+            }
+            updateSquadDisplay();
+        }
+
+        function updateSquadDisplay() {
+            const squadList = document.getElementById('squad-list');
+            squadList.innerHTML = '';
+            squad.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                squadList.appendChild(li);
+            });
+
+            document.querySelector('.squad h2').textContent = `Your Squad (${squad.length}/6)`;
+
+            const battleButton = document.getElementById('battle-button');
+            battleButton.disabled = squad.length < 2;
+
+            // Update button texts
+            document.querySelectorAll('.pokemon-card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                const button = card.querySelector('button');
+                if (squad.includes(name)) {
+                    button.textContent = 'Remove from Squad';
+                } else {
+                    button.textContent = 'Add to Squad';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
